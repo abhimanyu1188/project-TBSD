@@ -1,4 +1,4 @@
-_crt_secure_no_warnings
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -8,6 +8,7 @@ _crt_secure_no_warnings
 #include "ui.h"
 
 #define MAX_PLAYERS 3
+#define MAX_SIZE 52  // Assuming a standard deck size
 
 int main() {
     // Pointer to hold the deck of cards
@@ -17,7 +18,7 @@ int main() {
     // Array to hold player information
     Player players[MAX_PLAYERS];
     // Initialize dealer information
-    Player dealer = { .handSize = 0, .score = 0, .chips = 0 };
+    Player dealer = { .hand = NULL, .handSize = 0, .score = 0, .chips = 0 };
 
     // Allocate memory for each player's hand and initialize player details
     for (int i = 0; i < MAX_PLAYERS; i++) {
@@ -39,17 +40,24 @@ int main() {
     }
 
     // Seed the random number generator
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
 
     // Initialize and shuffle the deck
     initializeDeck(&deck);
     shuffleDeck(deck);
 
     int option;
+    int numPlayers;
+    int top = 0;  // Initialize top variable
+
     // Main loop for user menu
     do {
         displayMenu();  // Display the menu options
-        scanf("%d", &option);  // Read user input
+        if (scanf("%d", &option) != 1) {
+            printf("Invalid input. Please enter an integer.\n");
+            while (getchar() != '\n'); // Clear invalid input
+            continue;
+        }
 
         switch (option) {
         case 1:
@@ -68,8 +76,11 @@ int main() {
         case 3:
             // Allow the user to play a round of blackjack
             displayPlayerCountMenu();  // Show options for number of players
-            int numPlayers;
-            scanf("%d", &numPlayers);  // Read number of players
+            if (scanf("%d", &numPlayers) != 1) {
+                printf("Invalid input. Please enter an integer.\n");
+                while (getchar() != '\n'); // Clear invalid input
+                continue;
+            }
             if (numPlayers >= 1 && numPlayers <= MAX_PLAYERS) {
                 playRound(players, numPlayers, &dealer, deck, &top);
             }
