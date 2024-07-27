@@ -222,7 +222,7 @@ void playRound(PPlayer players, int numPlayers, PPlayer dealer, PCard deck, int*
             // Player busts
             printf("Player %d busts! Dealer wins.\n", i + 1);
         }
-        else if (dealer->score > 21 || players[i].score > dealer's score) {
+        else if (dealer->score > 21 || players[i].score > dealer->score){
             // Player wins
             players[i].chips += 20; // Win reward
             printf("Player %d wins!\n", i + 1);
