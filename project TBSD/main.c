@@ -1,5 +1,4 @@
 #define _CRT_SECURE_NO_WARNINGS
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -8,17 +7,20 @@
 #include "gamelogic.h"
 #include "ui.h"
 
-//The maximum number of players that can play are 3 
 #define MAX_PLAYERS 3
+#define MAX_SIZE 52  // Assuming a standard deck size
 
-//Main function
 int main() {
+    // Pointer to hold the deck of cards
     PCard deck = NULL;
-    int top = 0;
+    // Index for the top card in the deck
+    int decktop = 0;
+    // Array to hold player information
     Player players[MAX_PLAYERS];
-    Player dealer = { .handSize = 0, .score = 0, .chips = 0 };
+    // Initialize dealer information
+    Player dealer = { .hand = NULL, .handSize = 0, .score = 0, .chips = 0 };
 
-    // Initializing the players by dynamic memory allocation
+    // Allocate memory for each player's hand and initialize player details
     for (int i = 0; i < MAX_PLAYERS; i++) {
         players[i].hand = (PCard)malloc(MAX_SIZE * sizeof(Card));
         players[i].handSize = 0;
@@ -26,59 +28,82 @@ int main() {
         players[i].chips = 0;
         if (players[i].hand == NULL) {
             printf("Memory allocation failed for player %d!\n", i + 1);
-            exit(1);
+            exit(1);  // Exit if memory allocation fails
         }
     }
 
+    // Allocate memory for the dealer's hand
     dealer.hand = (PCard)malloc(MAX_SIZE * sizeof(Card));
     if (dealer.hand == NULL) {
         printf("Memory allocation failed for dealer!\n");
-        exit(1);
+        exit(1);  // Exit if memory allocation fails
     }
-    //using random function to generate random cards
-    srand(time(NULL));
 
+    // Seed the random number generator
+    srand((unsigned int)time(NULL));
+
+    // Initialize and shuffle the deck
     initializeDeck(&deck);
     shuffleDeck(deck);
 
     int option;
-    do {
-        displayMainMenu();
-        scanf("%d", &option);
+    int numPlayers;
+    int top = 0;  // Initialize top variable
 
-        //For single player as of now
+    // Main loop for user menu
+    do {
+        displayMenu();  // Display the menu options
+        if (scanf("%d", &option) != 1) {
+            printf("Invalid input. Please enter an integer.\n");
+            while (getchar() != '\n'); // Clear invalid input
+            continue;
+        }
+
         switch (option) {
         case 1:
-            addChipsToPlayer(&players[0]); 
+            // Add chips to each player
+            for (int i = 0; i < MAX_PLAYERS; i++) {
+                addChips(&players[i]);
+            }
             break;
         case 2:
-            checkCurrentBalance(&players[0]); 
+            // Check and display the balance of each player
+            for (int i = 0; i < MAX_PLAYERS; i++) {
+                printf("Player %d's ", i + 1);
+                checkBalance(&players[i]);
+            }
             break;
         case 3:
-            displayPlayerCountMenu();
-            int numPlayers;
-            scanf("%d", &numPlayers);
-            if (numPlayers == 1) {
-                playGame(&players[0], &dealer, deck, &top); 
+            // Allow the user to play a round of blackjack
+            displayPlayerCountMenu();  // Show options for number of players
+            if (scanf("%d", &numPlayers) != 1) {
+                printf("Invalid input. Please enter an integer.\n");
+                while (getchar() != '\n'); // Clear invalid input
+                continue;
+            }
+            if (numPlayers >= 1 && numPlayers <= MAX_PLAYERS) {
+                playRound(players, numPlayers, &dealer, deck, &top);
             }
             else {
-                printf("Multiplayer functionality not yet implemented.\n");
+                printf("Invalid number of players. Please choose between 1 and %d.\n", MAX_PLAYERS);
             }
             break;
         case 4:
+            // Exit the program
             printf("Exiting...\n");
             break;
         default:
+            // Handle invalid menu options
             printf("Invalid option. Please try again.\n");
         }
-    } while (option != 4);
+    } while (option != 4);  // Repeat until the user chooses to exit
 
-    //Freeing the deck
-    freeDeck(deck);
+    // Free allocated memory
+    freeDeck(deck);  // Free memory allocated for the deck
     for (int i = 0; i < MAX_PLAYERS; i++) {
-        freePlayer(&players[i]);
+        freePlayer(&players[i]);  // Free memory allocated for each player
     }
-    freePlayer(&dealer);
+    freePlayer(&dealer);  // Free memory allocated for the dealer
 
-    return 0;
+    return 0;  // Exit the program successfully
 }

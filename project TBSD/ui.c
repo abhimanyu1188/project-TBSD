@@ -33,9 +33,9 @@ void checkCurrentBalance(PPlayer player) {
 
 //Printing cards from suits
 void printCard(Card card) {
-    const char* rankStrings[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
-    const char* suitStrings[] = { "Hearts", "Diamonds", "Clubs", "Spades" };
-    printf("%s of %s\n", rankStrings[card.rank - 1], suitStrings[card.suit]);
+    const char* rankLabels[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+    const char* suitlabels[] = { "Hearts", "Diamonds", "Clubs", "Spades" };
+    printf("%s of %s\n", rankLabels[card.rank - 1], suitlabels[card.suit]);
 }
 
 //Printing the hands of player
@@ -151,7 +151,95 @@ void playGame(PPlayer player, PPlayer dealer, PCard deck, int* top) {
     printf("Player's balance: %d chips\n", player->chips);
 }
 
-//Playing of round 
+// Implementation of playing in rounds
 void playRound(PPlayer players, int numPlayers, PPlayer dealer, PCard deck, int* top) {
-   
+
+    // Ensure all players have enough chips and deduct initial bet
+    for (int i = 0; i < numPlayers; i++) {
+        ensureEnoughChips(&players[i]);
+        players[i].chips -= 10; // Deduct bet from each player's chips
+    }
+
+    // Reset hands and scores for all players and the dealer
+    for (int i = 0; i < numPlayers; i++) {
+        players[i].handSize = 0; // Resets the player hand size
+        players[i].score = 0;    // Resets the player score
+    }
+    dealer->handSize = 0; // Resets the  dealer hand size
+    dealer->score = 0;    // Resets the dealer score
+
+    // Deal initial two cards to each player and dealer
+    for (int i = 0; i < numPlayers; i++) {
+        players[i].hand[players[i].handSize++] = dealCard(deck, top); 
+        players[i].hand[players[i].handSize++] = dealCard(deck, top); 
+        players[i].score = calculateScore(&players[i]); // Calculate players initial score
+    }
+    dealer->hand[dealer->handSize++] = dealCard(deck, top); 
+    dealer->hand[dealer->handSize++] = dealCard(deck, top); 
+    dealer->score = calculateScore(dealer); // Calculate dealer's initial score
+
+    // Print dealer's initial hand with one card hidden
+    printf("Dealer's hand:\n");
+    printHand(dealer, 0); // to Show one card hidden
+
+    // Each player's turn
+    char choice;
+    for (int i = 0; i < numPlayers; i++) {
+        printf("Player %d's turn:\n", i + 1);
+        printHand(&players[i], 1); // to Print player's hand
+        printf("Player's score: %d\n", players[i].score);
+
+        // Allow player to hit or stand
+        while (players[i].score < 21) {
+            printf("Do you want to hit or stand? (h/s): ");
+            scanf(" %c", &choice);
+            if (choice == 'h') {
+                players[i].hand[players[i].handSize++] = dealCard(deck, top); // Deal another card
+                players[i].score = calculateScore(&players[i]); // Update score
+                printHand(&players[i], 1); // Print updated hand
+                printf("Player's score: %d\n", players[i].score);
+            }
+            else {
+                break; // End turn if player stands
+            }
+        }
+    }
+
+    // Dealer's turn to draw cards until reaching at least 17
+    while (dealer->score < 17) {
+        dealer->hand[dealer->handSize++] = dealCard(deck, top); // Deal card to dealer
+        dealer->score = calculateScore(dealer); // Update dealer score
+    }
+
+    // Print dealer's final hand and score
+    printf("Dealer's turn:\n");
+    printHand(dealer, 1); // Show dealer's full hand
+    printf("Dealer's score: %d\n", dealer->score);
+
+    // Determine results and update chips
+    for (int i = 0; i < numPlayers; i++) {
+        if (players[i].score > 21) {
+            // Player busts
+            printf("Player %d busts! Dealer wins.\n", i + 1);
+        }
+        else if (dealer->score > 21 || players[i].score > dealer->score){
+            // Player wins
+            players[i].chips += 20; // Win reward
+            printf("Player %d wins!\n", i + 1);
+    }
+ else if (dealer->score > players[i].score) {
+        // Dealer wins
+        printf("Dealer wins against Player %d.\n", i + 1);
+        }
+ else {
+            // Tie
+            players[i].chips += 10; // Tie reward
+            printf("Player %d ties with the dealer.\n", i + 1);
+            }
+}
+
+// Display remaining chips balance for each player
+for (int i = 0; i < numPlayers; i++) {
+    printf("Player %d's balance: %d chips\n", i + 1, players[i].chips);
+}
 }
