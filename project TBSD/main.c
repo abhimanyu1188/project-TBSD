@@ -52,7 +52,7 @@ int main() {
 
     // Main loop for user menu
     do {
-        displayMenu();  // Display the menu options
+        displayMainMenu();  // Display the menu options
         if (scanf("%d", &option) != 1) {
             printf("Invalid input. Please enter an integer.\n");
             while (getchar() != '\n'); // Clear invalid input
@@ -63,14 +63,14 @@ int main() {
         case 1:
             // Add chips to each player
             for (int i = 0; i < MAX_PLAYERS; i++) {
-                addChips(&players[i]);
+                addChipsToPlayer(&players[i]);
             }
             break;
         case 2:
             // Check and display the balance of each player
             for (int i = 0; i < MAX_PLAYERS; i++) {
                 printf("Player %d's ", i + 1);
-                checkBalance(&players[i]);
+                checkCurrentBalance(&players[i]);
             }
             break;
         case 3:
