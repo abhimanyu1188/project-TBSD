@@ -40,9 +40,9 @@ void printCard(Card card) {
 
 //Printing the hands of player
 
-void printHand(PPlayer player, int revealAll) {
+void printHand(PPlayer player, int reveal) {
     for (int i = 0; i < player->handSize; i++) {
-        if (i == 1 && !revealAll) {
+        if (i == 1 && !reveal) {
             printf("Hidden card\n");
         }
         else {
