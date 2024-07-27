@@ -2,10 +2,10 @@
 
 #include "blackjack.h"
 
-void displayMainMenu();
-void displayPlayerCountMenu();
+int displayMainMenu();
+int displayPlayerCountMenu();
 void addChipsToPlayer(PPlayer player);
-void checkCurrentBalance(PPlayer player);
+int checkCurrentBalance(PPlayer player);
 void printCard(Card card);
 void printHand(PPlayer player);
 void playGame(PPlayer player, PPlayer dealer, PCard deck, int* top);

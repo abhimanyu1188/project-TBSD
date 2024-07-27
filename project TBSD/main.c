@@ -48,11 +48,12 @@ int main() {
 
     int option;
     int numPlayers;
-    int top = 0;  // Initialize top variable
-
+    int top = 0; 
+    int menu = 0;
+    int count = 0;
     // Main loop for user menu
     do {
-        displayMainMenu();  // Display the menu options
+        menu=displayMainMenu();  // Display the menu options
         if (scanf("%d", &option) != 1) {
             printf("Invalid input. Please enter an integer.\n");
             while (getchar() != '\n'); // Clear invalid input
@@ -75,7 +76,7 @@ int main() {
             break;
         case 3:
             // Allow the user to play a round of blackjack
-            displayPlayerCountMenu();  // Show options for number of players
+            count=displayPlayerCountMenu();  // Show options for number of players
             if (scanf("%d", &numPlayers) != 1) {
                 printf("Invalid input. Please enter an integer.\n");
                 while (getchar() != '\n'); // Clear invalid input

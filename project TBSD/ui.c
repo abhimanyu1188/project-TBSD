@@ -4,20 +4,22 @@
 #include <stdio.h>
 
 //Displaying the main menu 
-void displayMainMenu() {
+int displayMainMenu() {
     printf("1. Add 100 chips\n");
     printf("2. Check balance\n");
     printf("3. Play game\n");
     printf("4. Exit\n");
     printf("Choose an option: ");
+    return 1;
 }
 //Displaying the Player Count Menu
-void displayPlayerCountMenu() {
+int displayPlayerCountMenu() {
     printf("Select number of players:\n");
     printf("1. One player\n");
     printf("2. Two players\n");
     printf("3. Three players\n");
     printf("Choose an option: ");
+    return 0;
 }
 
 //Adding 100 chips to the player
@@ -27,8 +29,9 @@ void addChipsToPlayer(PPlayer player) {
 }
 
 //Checking of the current balance
-void checkCurrentBalance(PPlayer player) {
+int checkCurrentBalance(PPlayer player) {
     printf("Current balance: %d\n", player->chips);
+    return 200;
 }
 
 //Printing cards from suits

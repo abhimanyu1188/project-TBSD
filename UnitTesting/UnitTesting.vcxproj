@@ -106,7 +106,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>\\Mac\Home\Documents\Semester 2\Assignments\Project 2 %28 Team based software development %29\working on it\project TBSD;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\parmi\source\repos\project-TBSD heheh\project TBSD;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <LinkIncremental>true</LinkIncremental>
@@ -135,7 +135,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>\\Mac\Home\Documents\Semester 2\Assignments\Project 2 %28 Team based software development %29\working on it\project TBSD\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\parmi\source\repos\project-TBSD heheh\UnitTesting\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>main.obj;gamelogic.obj;ui.obj;tournament.obj;datamanagement.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
