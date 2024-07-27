@@ -8,61 +8,64 @@
 #include "gamelogic.h"
 #include "ui.h"
 
-//The maximum number of players that can play are 3 
-#define MAX_PLAYERS 3
+#define MAX_PLAYERS 3 // Maximum number of players
 
-//Main function
 int main() {
     PCard deck = NULL;
     int top = 0;
     Player players[MAX_PLAYERS];
     Player dealer = { .handSize = 0, .score = 0, .chips = 0 };
 
-    // Initializing the players by dynamic memory allocation
+    // Allocate memory for players' hands
     for (int i = 0; i < MAX_PLAYERS; i++) {
         players[i].hand = (PCard)malloc(MAX_SIZE * sizeof(Card));
-        players[i].handSize = 0;
-        players[i].score = 0;
-        players[i].chips = 0;
         if (players[i].hand == NULL) {
             printf("Memory allocation failed for player %d!\n", i + 1);
             exit(1);
         }
     }
 
+    // Allocate memory for dealer's hand
     dealer.hand = (PCard)malloc(MAX_SIZE * sizeof(Card));
     if (dealer.hand == NULL) {
         printf("Memory allocation failed for dealer!\n");
         exit(1);
     }
-    //using random function to generate random cards
-    srand(time(NULL));
 
+    // Initialize and shuffle the deck
+    srand(time(NULL));
     initializeDeck(&deck);
     shuffleDeck(deck);
 
     int option;
     do {
-        displayMainMenu();
+        displayMenu(); // Show the main menu
         scanf("%d", &option);
 
-        //For single player as of now
         switch (option) {
         case 1:
-            addChipsToPlayer(&players[0]); 
+            // Add chips to all players
+            for (int i = 0; i < MAX_PLAYERS; i++) {
+                addChips(&players[i]);
+            }
             break;
         case 2:
-            checkCurrentBalance(&players[0]); 
+            // Display balance for all players
+            for (int i = 0; i < MAX_PLAYERS; i++) {
+                printf("Player %d's balance: ", i + 1);
+                checkBalance(&players[i]);
+            }
             break;
         case 3:
+            // Play the game with the specified number of players
             displayPlayerCountMenu();
             int numPlayers;
             scanf("%d", &numPlayers);
-            if (numPlayers == 1) {
-                playGame(&players[0], &dealer, deck, &top); 
+            if (numPlayers >= 1 && numPlayers <= MAX_PLAYERS) {
+                playRound(players, numPlayers, &dealer, deck, &top);
             }
             else {
-                printf("Multiplayer functionality not yet implemented.\n");
+                printf("Invalid number of players. Please choose between 1 and %d.\n", MAX_PLAYERS);
             }
             break;
         case 4:
@@ -73,7 +76,7 @@ int main() {
         }
     } while (option != 4);
 
-    //Freeing the deck
+    // Free allocated memory
     freeDeck(deck);
     for (int i = 0; i < MAX_PLAYERS; i++) {
         freePlayer(&players[i]);
