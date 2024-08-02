@@ -60,6 +60,9 @@ int main() {
             continue;
         }
 
+        loadGame(players, MAX_PLAYERS, &dealer, "game_save.dat");
+
+
         switch (option) {
         case 1:
             // Add chips to each player
@@ -92,6 +95,7 @@ int main() {
         case 4:
             // Exit the program
             printf("Exiting...\n");
+            saveGame(players, MAX_PLAYERS, &dealer, "game_save.dat");
             break;
         default:
             // Handle invalid menu options
