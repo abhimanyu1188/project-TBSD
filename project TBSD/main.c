@@ -46,22 +46,24 @@ int main() {
     initializeDeck(&deck);
     shuffleDeck(deck);
 
+    // Load the game state if it exists
+    if (!loadGame(players, MAX_PLAYERS, &dealer, "game_save.dat")) {
+        printf("No previous game state found, starting a new game.\n");
+    }
+
     int option;
     int numPlayers;
-    int top = 0; 
+    int top = 0;
     int menu = 0;
     int count = 0;
     // Main loop for user menu
     do {
-        menu=displayMainMenu();  // Display the menu options
+        menu = displayMainMenu();  // Display the menu options
         if (scanf("%d", &option) != 1) {
             printf("Invalid input. Please enter an integer.\n");
             while (getchar() != '\n'); // Clear invalid input
             continue;
         }
-
-        loadGame(players, MAX_PLAYERS, &dealer, "game_save.dat");
-
 
         switch (option) {
         case 1:
@@ -79,7 +81,7 @@ int main() {
             break;
         case 3:
             // Allow the user to play a round of blackjack
-            count=displayPlayerCountMenu();  // Show options for number of players
+            count = displayPlayerCountMenu();  // Show options for number of players
             if (scanf("%d", &numPlayers) != 1) {
                 printf("Invalid input. Please enter an integer.\n");
                 while (getchar() != '\n'); // Clear invalid input
@@ -95,7 +97,6 @@ int main() {
         case 4:
             // Exit the program
             printf("Exiting...\n");
-            saveGame(players, MAX_PLAYERS, &dealer, "game_save.dat");
             break;
         default:
             // Handle invalid menu options
@@ -103,12 +104,19 @@ int main() {
         }
     } while (option != 4);  // Repeat until the user chooses to exit
 
-    // Free allocated memory
-    freeDeck(deck);  // Free memory allocated for the deck
-    for (int i = 0; i < MAX_PLAYERS; i++) {
-        freePlayer(&players[i]);  // Free memory allocated for each player
+    // Save the game state before exiting
+    if (!saveGame(players, MAX_PLAYERS, &dealer, "game_save.dat")) {
+        printf("Failed to save game state.\n");
     }
-    freePlayer(&dealer);  // Free memory allocated for the dealer
 
-    return 0;  // Exit the program successfully
+    // Free allocated memory
+    freeDeck(deck);  
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        freePlayer(&players[i]);  
+    }
+    // Free memory allocated for the dealer
+    freePlayer(&dealer);  
+
+    // Exit the program successfully
+    return 0;  
 }

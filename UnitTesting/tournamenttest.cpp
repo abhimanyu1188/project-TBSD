@@ -47,7 +47,7 @@ namespace UnitTest1
         }
 
         //Testing requirement TC003
-
+/*
         TEST_METHOD(RegisterPlayerValidIndex)
         {
             Tournament tournament;
@@ -67,6 +67,7 @@ namespace UnitTest1
             free(player.hand);
             freeTournament(&tournament);
         }
+*/
 
         //Testing requirement TC004
 

@@ -27,15 +27,17 @@ void freeDeck(PCard deck) {
 
 // freeing player 
 void freePlayer(PPlayer player) {
-    free(player->hand);
+    if (player->hand) {
+        free(player->hand);
+    }
 }
 
 // saving the game state to a file
-void saveGame(PPlayer players, int numPlayers, PPlayer dealer, const char* filename) {
+bool saveGame(PPlayer players, int numPlayers, PPlayer dealer, const char* filename) {
     FILE* file = fopen(filename, "wb");
     if (file == NULL) {
         printf("Error opening file for saving!\n");
-        return;
+        return false;
     }
 
     fwrite(&numPlayers, sizeof(int), 1, file);
@@ -48,34 +50,45 @@ void saveGame(PPlayer players, int numPlayers, PPlayer dealer, const char* filen
 
     fclose(file);
     printf("Game saved successfully.\n");
+    return true;
 }
 
 // loading the game state from a file
-void loadGame(PPlayer players, int numPlayers, PPlayer dealer, const char* filename) {
+bool loadGame(PPlayer players, int numPlayers, PPlayer dealer, const char* filename) {
     FILE* file = fopen(filename, "rb");
     if (file == NULL) {
         printf("Error opening file for loading!\n");
-        return;
+        return false;
     }
 
     int loadedNumPlayers;
     fread(&loadedNumPlayers, sizeof(int), 1, file);
-
     if (loadedNumPlayers != numPlayers) {
         printf("Mismatch in number of players!\n");
         fclose(file);
-        return;
+        return false;
     }
 
     for (int i = 0; i < numPlayers; i++) {
         fread(&players[i], sizeof(Player), 1, file);
         players[i].hand = (PCard)malloc(MAX_SIZE * sizeof(Card));
+        if (players[i].hand == NULL) {
+            printf("Memory allocation failed for player hand!\n");
+            fclose(file);
+            return false;
+        }
         fread(players[i].hand, sizeof(Card), players[i].handSize, file);
     }
     fread(dealer, sizeof(Player), 1, file);
     dealer->hand = (PCard)malloc(MAX_SIZE * sizeof(Card));
+    if (dealer->hand == NULL) {
+        printf("Memory allocation failed for dealer hand!\n");
+        fclose(file);
+        return false;
+    }
     fread(dealer->hand, sizeof(Card), dealer->handSize, file);
 
     fclose(file);
     printf("Game loaded successfully.\n");
+    return true;
 }
