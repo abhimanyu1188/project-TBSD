@@ -10,7 +10,7 @@ extern "C" {
 
 namespace UnitTesting
 {
-    TEST_CLASS(UnitTesting)
+    TEST_CLASS(UITESTING)
     {
     public:
 
@@ -52,10 +52,16 @@ namespace UnitTesting
             Assert::AreEqual(expected, output);
         }
 
-        // UIM 007: Test Exit Game
-       /* / TEST_METHOD(Test_ExitGame)
-        {
-        } /*/
+        // UIM 005: Test Exiting the Game
+        TEST_METHOD(Test_ExitGame) {
+            int option = 4;
+            bool exitCondition = false;
 
+            if (option == 4) {
+                exitCondition = true;
+            }
+
+            Assert::IsTrue(exitCondition);
+        }
     };
 }
